@@ -1,0 +1,14 @@
+{
+  "name": "ace",
+  "version": "1.0.0",
+  "description": "ACE App - Symfony with Tailwind CSS",
+  "private": true,
+  "scripts": {
+    "build:css": "tailwindcss -i ./assets/styles/app.css -o ./public/build/app.css",
+    "watch:css": "tailwindcss -i ./assets/styles/app.css -o ./public/build/app.css --watch",
+    "build": "npm run build:css"
+  },
+  "devDependencies": {
+    "tailwindcss": "^3.4.0"
+  }
+}

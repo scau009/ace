@@ -1,0 +1,5 @@
+barry_deferred_logger:
+    logger_channel: app
+    auto_flush_on_exception: true
+    auto_flush_on_request: true
+    enable_sql_logging: true
