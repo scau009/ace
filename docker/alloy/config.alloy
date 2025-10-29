@@ -1,0 +1,139 @@
+// Grafana Alloy 配置文件
+// 用于收集日志并发送到 Loki
+
+// ============================================
+// Loki 写入端点配置
+// ============================================
+loki.write "default" {
+  endpoint {
+    url = "http://loki:3100/loki/api/v1/push"
+  }
+}
+
+// ============================================
+// Nginx 访问日志收集
+// ============================================
+loki.source.file "nginx_access" {
+  targets = [
+    {
+      __path__ = "/var/log/nginx/access.log",
+      job      = "nginx_access",
+      env      = env("APP_ENV"),
+      app      = "ace",
+    },
+  ]
+
+  forward_to = [loki.process.nginx_access.receiver]
+}
+
+// Nginx 访问日志解析
+loki.process "nginx_access" {
+  // 解析 Nginx 日志格式
+  stage.regex {
+    expression = "^(?P<remote_addr>\\S+) - (?P<remote_user>\\S+) \\[(?P<time_local>[^\\]]+)\\] \"(?P<method>\\S+) (?P<path>\\S+) (?P<protocol>\\S+)\" (?P<status>\\d+) (?P<body_bytes_sent>\\d+) \"(?P<http_referer>[^\"]*)\" \"(?P<http_user_agent>[^\"]*)\""
+  }
+
+  // 提取标签
+  stage.labels {
+    values = {
+      method = "",
+      status = "",
+    }
+  }
+
+  // 解析时间戳
+  stage.timestamp {
+    source = "time_local"
+    format = "02/Jan/2006:15:04:05 -0700"
+  }
+
+  forward_to = [loki.write.default.receiver]
+}
+
+// ============================================
+// Nginx 错误日志收集
+// ============================================
+loki.source.file "nginx_error" {
+  targets = [
+    {
+      __path__ = "/var/log/nginx/error.log",
+      job      = "nginx_error",
+      env      = env("APP_ENV"),
+      app      = "ace",
+    },
+  ]
+
+  forward_to = [loki.write.default.receiver]
+}
+
+// ============================================
+// Symfony 应用日志收集 (JSON 格式)
+// ============================================
+// 使用 local.file_match 来支持 glob 模式
+local.file_match "symfony_logs" {
+  path_targets = [{
+    __path__ = "/var/www/html/var/log/*.log",
+    job      = "symfony_app",
+    env      = env("APP_ENV"),
+    app      = "ace",
+  }]
+}
+
+loki.source.file "symfony_app" {
+  targets    = local.file_match.symfony_logs.targets
+  forward_to = [loki.process.symfony_app.receiver]
+}
+
+// Symfony JSON 日志解析
+loki.process "symfony_app" {
+  // 解析 JSON
+  stage.json {
+    expressions = {
+      message  = "message",
+      level    = "level_name",
+      channel  = "channel",
+      context  = "context",
+      extra    = "extra",
+      datetime = "datetime",
+    }
+  }
+
+  // 提取标签
+  stage.labels {
+    values = {
+      level   = "",
+      channel = "",
+    }
+  }
+
+  // 解析时间戳
+  stage.timestamp {
+    source = "datetime"
+    format = "RFC3339"
+  }
+
+  // 可选：过滤 DEBUG 级别日志
+  // stage.match {
+  //   selector = "{level=\"DEBUG\"}"
+  //   action   = "drop"
+  // }
+
+  forward_to = [loki.write.default.receiver]
+}
+
+// ============================================
+// PHP-FPM 日志收集
+// ============================================
+local.file_match "php_fpm_logs" {
+  path_targets = [{
+    __path__ = "/var/log/php-fpm/*.log",
+    job      = "php_fpm",
+    env      = env("APP_ENV"),
+    app      = "ace",
+  }]
+}
+
+loki.source.file "php_fpm" {
+  targets    = local.file_match.php_fpm_logs.targets
+  forward_to = [loki.write.default.receiver]
+}

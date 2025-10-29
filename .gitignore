@@ -25,3 +25,8 @@
 /node_modules/
 /public/build/
 ###< Node.js & Tailwind CSS ###
+
+###> monitoring stack ###
+/docker/grafana/data/
+/docker/loki/data/
+###< monitoring stack ###
