@@ -2,7 +2,7 @@
 
 namespace App\Service\TrackingAgent\Model;
 
-abstract class TrackingDetailItem
+class TrackingDetailItem
 {
     public string $content = '';
 

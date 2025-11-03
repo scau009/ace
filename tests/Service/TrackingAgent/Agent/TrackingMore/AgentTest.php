@@ -20,6 +20,14 @@ class AgentTest extends KernelTestCase
         $this->assertNotEmpty($courierList);
     }
 
+    public function testGetTrackingResult()
+    {
+        /** @var Agent $agent */
+        $agent = self::getContainer()->get(Agent::class);
+        $result = $agent->getTracking("9200190383092505034795");
+        $this->assertNotEmpty($result);
+    }
+
     public function testMongoDBConnection()
     {
         $dm = self::getContainer()->get('doctrine_mongodb.odm.default_document_manager');

@@ -2,6 +2,7 @@
 
 namespace App\Service\TrackingAgent\Agent\TrackingMore;
 
+use App\Repository\TrackingMoreResultsRepository;
 use App\Service\TrackingAgent\Agent\TrackingMore\Dto\Courier;
 use App\Service\TrackingAgent\Model\TrackingResult;
 use App\Service\TrackingAgent\TrackingAgent;
@@ -16,10 +17,11 @@ use TrackingMore\Trackings;
 
 class Agent implements TrackingAgent
 {
-    public function __construct(private readonly string              $apiKey,
-                                private readonly LoggerInterface     $trackingAgentLogger,
-                                private readonly CacheInterface      $trackingMorePool,
-                                private readonly DenormalizerInterface&NormalizerInterface $serializer)
+    public function __construct(private readonly string                                    $apiKey,
+                                private readonly LoggerInterface                           $trackingAgentLogger,
+                                private readonly CacheInterface                            $trackingMorePool,
+                                private readonly DenormalizerInterface&NormalizerInterface $serializer,
+                                private readonly TrackingMoreResultsRepository             $trackingMoreResultsRepository)
     {
 
     }
@@ -33,7 +35,7 @@ class Agent implements TrackingAgent
                 $this->trackingAgentLogger->error("TrackingMore detect courier code failed: {$trackingNo}");
                 return;
             }
-        }else{
+        } else {
             $courier = $this->findCourier($carrierCode);
             if (!$courier) {
                 $this->trackingAgentLogger->error("TrackingMore carrier code: {$carrierCode} not found");
@@ -46,8 +48,8 @@ class Agent implements TrackingAgent
                 'courier_code' => $carrierCode,
             ]);
             //todo 转换，存储
-            $this->trackingAgentLogger->info("aa",$response);
-            return ;
+            $this->trackingAgentLogger->info("aa", $response);
+            return;
         } catch (\Exception $exception) {
             $this->trackingAgentLogger->error("TrackingMore register tracking number failed: {$exception->getMessage()}", [
                 'apiKey' => $this->apiKey,
@@ -65,8 +67,9 @@ class Agent implements TrackingAgent
             $response = (new Trackings($this->apiKey))->getTrackingResults([
                 'tracking_numbers' => $trackingNo,
             ]);
-            $trackingResult = $response['data'];
-            return $trackingResult;
+            $trackingResult = $response['data'][0] ?? [];
+            $this->trackingMoreResultsRepository->createOrUpdateOne($trackingResult['tracking_number'], $trackingResult['courier_code'], $trackingResult);
+            return (new TrackingResult())->setTrackingNo($trackingResult['tracking_number']);
         } catch (\Exception $exception) {
             $this->trackingAgentLogger->error("TrackingMore get tracking number failed: {$exception->getMessage()}", [
                 'apiKey' => $this->apiKey,

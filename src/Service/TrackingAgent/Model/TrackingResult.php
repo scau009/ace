@@ -2,7 +2,7 @@
 
 namespace App\Service\TrackingAgent\Model;
 
-abstract class TrackingResult
+class TrackingResult
 {
     public string $trackingNo  = '';
     public string $carrierCode = '';
@@ -21,9 +21,10 @@ abstract class TrackingResult
         return $this->trackingNo;
     }
 
-    public function setTrackingNo(string $trackingNo): void
+    public function setTrackingNo(string $trackingNo): TrackingResult
     {
         $this->trackingNo = $trackingNo;
+        return $this;
     }
 
     public function getCarrierCode(): string
@@ -31,9 +32,10 @@ abstract class TrackingResult
         return $this->carrierCode;
     }
 
-    public function setCarrierCode(string $carrierCode): void
+    public function setCarrierCode(string $carrierCode): TrackingResult
     {
         $this->carrierCode = $carrierCode;
+        return $this;
     }
 
     public function getStatus(): string
@@ -41,9 +43,10 @@ abstract class TrackingResult
         return $this->status;
     }
 
-    public function setStatus(string $status): void
+    public function setStatus(string $status): TrackingResult
     {
         $this->status = $status;
+        return $this;
     }
 
     public function getDetails(): array
@@ -51,9 +54,10 @@ abstract class TrackingResult
         return $this->details;
     }
 
-    public function setDetails(array $details): void
+    public function setDetails(array $details): TrackingResult
     {
         $this->details = $details;
+        return $this;
     }
 
     public function getLastUpdateAt(): ?\DateTime
@@ -61,8 +65,11 @@ abstract class TrackingResult
         return $this->lastUpdateAt;
     }
 
-    public function setLastUpdateAt(?\DateTime $lastUpdateAt): void
+    public function setLastUpdateAt(?\DateTime $lastUpdateAt): TrackingResult
     {
         $this->lastUpdateAt = $lastUpdateAt;
+        return $this;
     }
+
+
 }
