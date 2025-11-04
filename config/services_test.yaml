@@ -24,3 +24,13 @@ services:
         arguments:
             - '%env(TRACKING_MORE_API_KEY)%'
             - '@monolog.logger.tracking_agent'
+
+    # 为 TrackingMore 处理器添加标签
+    App\Service\TrackingAgent\Processor\TrackingMore\:
+        resource: '../src/Service/TrackingAgent/Processor/TrackingMore'
+        tags: [ 'tracking_agent.processor' ]
+
+    # ProcessorRegistry加载所有标记为 tracking_agent.processor 的服务
+    App\Service\TrackingAgent\Processor\ProcessorRegistry:
+        arguments:
+            - !tagged_iterator tracking_agent.processor

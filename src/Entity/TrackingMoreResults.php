@@ -3,6 +3,7 @@
 namespace App\Entity;
 
 use App\Repository\TrackingMoreResultsRepository;
+use App\Service\TrackingAgent\Processor\IOriginData;
 use Doctrine\ORM\Mapping\Column;
 use Doctrine\ORM\Mapping\CustomIdGenerator;
 use Doctrine\ORM\Mapping\Entity;
@@ -15,7 +16,7 @@ use Symfony\Bridge\Doctrine\IdGenerator\UuidGenerator;
 #[Entity(repositoryClass: TrackingMoreResultsRepository::class)]
 #[Table(name: '`tracking_more_results`')]
 #[Index(name: 'idx_trackingNumber_carrierCode', columns: ['tracking_number', 'carrier_code'])]
-class TrackingMoreResults
+class TrackingMoreResults implements IOriginData
 {
     #[Id]
     #[GeneratedValue(strategy: 'CUSTOM')]
@@ -92,4 +93,11 @@ class TrackingMoreResults
     {
         $this->updatedAt = $updatedAt;
     }
+
+    public function getOriginData(): array
+    {
+        return $this->result;
+    }
+
+
 }

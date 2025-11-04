@@ -5,6 +5,7 @@ namespace App\Service\TrackingAgent\Agent\TrackingMore;
 use App\Repository\TrackingMoreResultsRepository;
 use App\Service\TrackingAgent\Agent\TrackingMore\Dto\Courier;
 use App\Service\TrackingAgent\Model\TrackingResult;
+use App\Service\TrackingAgent\Processor\ProcessorRegistry;
 use App\Service\TrackingAgent\TrackingAgent;
 use Psr\Cache\InvalidArgumentException;
 use Psr\Log\LoggerInterface;
@@ -21,7 +22,8 @@ class Agent implements TrackingAgent
                                 private readonly LoggerInterface                           $trackingAgentLogger,
                                 private readonly CacheInterface                            $trackingMorePool,
                                 private readonly DenormalizerInterface&NormalizerInterface $serializer,
-                                private readonly TrackingMoreResultsRepository             $trackingMoreResultsRepository)
+                                private readonly TrackingMoreResultsRepository             $trackingMoreResultsRepository,
+                                private readonly ProcessorRegistry $processorRegistry)
     {
 
     }
@@ -68,8 +70,8 @@ class Agent implements TrackingAgent
                 'tracking_numbers' => $trackingNo,
             ]);
             $trackingResult = $response['data'][0] ?? [];
-            $this->trackingMoreResultsRepository->createOrUpdateOne($trackingResult['tracking_number'], $trackingResult['courier_code'], $trackingResult);
-            return (new TrackingResult())->setTrackingNo($trackingResult['tracking_number']);
+            $record = $this->trackingMoreResultsRepository->createOrUpdateOne($trackingResult['tracking_number'], $trackingResult['courier_code'], $trackingResult);
+            return $this->processorRegistry->process($record);
         } catch (\Exception $exception) {
             $this->trackingAgentLogger->error("TrackingMore get tracking number failed: {$exception->getMessage()}", [
                 'apiKey' => $this->apiKey,

@@ -6,25 +6,26 @@ class TrackingDetailItem
 {
     public string $content = '';
 
-    public string $time = '';
-
+    public \DateTime $time;
     public function getContent(): string
     {
         return $this->content;
     }
 
-    public function setContent(string $content): void
+    public function setContent(string $content): TrackingDetailItem
     {
         $this->content = $content;
+        return $this;
     }
 
-    public function getTime(): string
+    public function getTime(): \DateTime
     {
         return $this->time;
     }
 
-    public function setTime(string $time): void
+    public function setTime(\DateTime $time): TrackingDetailItem
     {
         $this->time = $time;
+        return $this;
     }
 }
