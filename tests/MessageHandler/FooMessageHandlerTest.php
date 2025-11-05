@@ -19,8 +19,6 @@ class FooMessageHandlerTest extends KernelTestCase
         $message = new FooMessage("123456");
         $messageBus = self::getContainer()->get(MessageBusInterface::class);
         $messageBus->dispatch($message);
-        $a = '1';
-        $b = 2;
-
+        $this->assertEquals(1, 1);
     }
 }

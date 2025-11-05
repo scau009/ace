@@ -11,6 +11,7 @@ final class FooMessageHandler
 {
     public function __invoke(FooMessage $message): void
     {
-        DeferredLogger::contextInfo("FooMessage {$message->orderNo} handled");
+        DeferredLogger::contextInfo("!!!!!FooMessage {$message->orderNo} handled");
+        DeferredLogger::flush();
     }
 }
