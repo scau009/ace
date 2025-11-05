@@ -6,8 +6,21 @@ ADD --chmod=0755 https://github.com/mlocati/docker-php-extension-installer/relea
 
 RUN install-php-extensions pdo_mysql pdo_pgsql mbstring exif pcntl bcmath gd redis xdebug-^3@stable intl mongodb
 
-# 建议：开启 Composer
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
+
+# 安装必要依赖
+RUN apk add --no-cache \
+        bash \
+        py3-pip \
+        supervisor
+
+RUN mkdir -p /etc/supervisor.d /var/log/supervisor
+
+COPY docker/php/supervisord.conf /etc/supervisord.conf
+COPY docker/php/entrypoint.sh /etc/entrypoint.sh
+
+# 确保 entrypoint.sh 可执行
+RUN chmod +x /etc/entrypoint.sh
 
 WORKDIR /var/www/html
 
