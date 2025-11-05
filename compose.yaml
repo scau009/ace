@@ -10,7 +10,6 @@ services:
     environment:
       APP_ENV: ${APP_ENV:-dev}
       DATABASE_URL: ${DATABASE_URL:-postgresql://root:ace123123@database:5432/ace?serverVersion=16&charset=utf8}
-      REDIS_URL: ${REDIS_URL:-redis://redis:6379}
       # Xdebug 远程调试配置
       XDEBUG_MODE: debug,develop
       XDEBUG_CLIENT_HOST: host.docker.internal
