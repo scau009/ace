@@ -2,6 +2,7 @@
 
 namespace App\Service\TrackingAgent\Agent\TrackingMore;
 
+use App\Enum\TrackingAgentEnum;
 use App\Repository\TrackingMoreResultsRepository;
 use App\Service\TrackingAgent\Agent\TrackingMore\Dto\Courier;
 use App\Service\TrackingAgent\Model\TrackingResult;
@@ -28,20 +29,20 @@ class Agent implements TrackingAgent
 
     }
 
-    public function register(string $trackingNo, string $carrierCode = ''): void
+    public function register(string $trackingNo, string $carrierCode = ''): string
     {
         $this->trackingAgentLogger->info("Register TrackingMore tracking number: {$trackingNo} with carrier code: {$carrierCode}");
         if (empty($carrierCode)) {
             $carrierCode = $this->detectCourierCode($trackingNo);
             if (empty($carrierCode)) {
                 $this->trackingAgentLogger->error("TrackingMore detect courier code failed: {$trackingNo}");
-                return;
+                return '';
             }
         } else {
             $courier = $this->findCourier($carrierCode);
             if (!$courier) {
                 $this->trackingAgentLogger->error("TrackingMore carrier code: {$carrierCode} not found");
-                return;
+                return '';
             }
         }
         try {
@@ -51,7 +52,7 @@ class Agent implements TrackingAgent
             ]);
             //todo 转换，存储
             $this->trackingAgentLogger->info("aa", $response);
-            return;
+            return $response['data']['tracking_number'] ?? '';
         } catch (\Exception $exception) {
             $this->trackingAgentLogger->error("TrackingMore register tracking number failed: {$exception->getMessage()}", [
                 'apiKey' => $this->apiKey,
@@ -59,7 +60,7 @@ class Agent implements TrackingAgent
                 'carrierCode' => $carrierCode,
                 'exception' => $exception,
             ]);
-            return;
+            return '';
         }
     }
 
@@ -140,5 +141,10 @@ class Agent implements TrackingAgent
                 return [];
             }
         });
+    }
+
+    public function getCode(): string
+    {
+        return TrackingAgentEnum::TrackingMore->value;
     }
 }

@@ -6,7 +6,12 @@ use App\Service\TrackingAgent\Model\TrackingResult;
 
 interface TrackingAgent
 {
-    public function register(string $trackingNo, string $carrierCode): void;
+    /**
+     * @return string
+     */
+    public function getCode(): string;
+
+    public function register(string $trackingNo, string $carrierCode): string;
 
     public function getTracking(string $trackingNo): ?TrackingResult;
 

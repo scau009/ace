@@ -2,9 +2,9 @@
 
 namespace App\Service\TrackingAgent\Agent\OneSevenTracking;
 
+use App\Enum\TrackingAgentEnum;
 use App\Service\TrackingAgent\Model\TrackingResult;
 use App\Service\TrackingAgent\TrackingAgent;
-use Barry\DeferredLoggerBundle\Service\DeferredLogger;
 use Symfony\Contracts\HttpClient\HttpClientInterface;
 
 class Agent implements TrackingAgent
@@ -13,7 +13,7 @@ class Agent implements TrackingAgent
     {
     }
 
-    public function register(string $trackingNo, string $carrierCode): void
+    public function register(string $trackingNo, string $carrierCode): string
     {
         // TODO: Implement register() method.
     }
@@ -33,5 +33,10 @@ class Agent implements TrackingAgent
         $response =$this->client->request('GET', 'https://res.17track.net/asset/carrier/info/apicarrier.all.json');
         $content = $response->getContent();
         return json_decode($content, true);
+    }
+
+    public function getCode(): string
+    {
+        return TrackingAgentEnum::OneSevenTracking->value;
     }
 }

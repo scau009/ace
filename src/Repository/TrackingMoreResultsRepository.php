@@ -28,7 +28,6 @@ class TrackingMoreResultsRepository extends ServiceEntityRepository
         $document->setResult($data);
         $document->setUpdatedAt(new \DateTimeImmutable());
         $this->getEntityManager()->persist($document);
-        $this->getEntityManager()->flush();
         return $document;
     }
 }

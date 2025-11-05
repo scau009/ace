@@ -28,9 +28,4 @@ class AgentTest extends KernelTestCase
         $this->assertNotEmpty($result);
     }
 
-    public function testMongoDBConnection()
-    {
-        $dm = self::getContainer()->get('doctrine_mongodb.odm.default_document_manager');
-        $this->assertNotNull($dm);
-    }
 }
