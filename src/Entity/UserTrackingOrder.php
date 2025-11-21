@@ -51,16 +51,16 @@ class UserTrackingOrder
     #[Column(type: 'integer', nullable: false)]
     private int $status = 0;
 
-    #[Column(type: 'datetime', nullable: false)]
+    #[Column(type: 'datetime_immutable', nullable: false)]
     private \DateTimeImmutable $createdAt;
 
-    #[Column(type: 'datetime', nullable: false)]
+    #[Column(type: 'datetime_immutable', nullable: false)]
     private \DateTimeImmutable $updatedAt;
 
     /**
      * @var \DateTimeImmutable|null 最后一次跟踪时间
      */
-    #[Column(type: 'datetime', nullable: true)]
+    #[Column(type: 'datetime_immutable', nullable: true)]
     private ?\DateTimeImmutable $lastTrackedAt = null;
 
     public function isFinished(): bool

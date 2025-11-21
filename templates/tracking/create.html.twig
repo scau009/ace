@@ -1,0 +1,188 @@
+{% extends 'dashboard_base.html.twig' %}
+
+{% block title %}Create Tracking Order{% endblock %}
+{% block page_title %}Create Tracking Order{% endblock %}
+
+{% block body %}
+    {# Page Header #}
+    <div class="bg-white rounded-lg shadow-sm p-6 mb-6">
+        <div class="flex items-center justify-between">
+            <div>
+                <h2 class="text-2xl font-bold text-gray-900 mb-2">Create New Tracking Order</h2>
+                <p class="text-gray-600">Add a new tracking number to monitor your shipment</p>
+            </div>
+            <a href="{{ path('app_home') }}" class="text-blue-600 hover:text-blue-700 font-medium flex items-center gap-2">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path>
+                </svg>
+                Back to Dashboard
+            </a>
+        </div>
+    </div>
+
+    {# Info Alert #}
+    <div class="bg-blue-50 border-l-4 border-blue-500 text-blue-700 p-4 rounded-md shadow-sm mb-6" role="alert">
+        <div class="flex">
+            <div class="flex-shrink-0">
+                <svg class="h-5 w-5 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                </svg>
+            </div>
+            <div class="ml-3">
+                <p class="font-medium">No existing order found</p>
+                <p class="text-sm mt-1">This tracking number is not associated with any of your orders. Create a new tracking order to start monitoring this shipment.</p>
+            </div>
+        </div>
+    </div>
+
+    {# Create Form #}
+    <div class="bg-white rounded-lg shadow-sm p-6">
+        <form action="{{ path('app_tracking_create') }}" method="POST">
+            {# Tracking Number #}
+            <div class="mb-6">
+                <label for="tracking_number" class="block text-sm font-medium text-gray-700 mb-2">
+                    Tracking Number <span class="text-red-500">*</span>
+                </label>
+                <input
+                    type="text"
+                    id="tracking_number"
+                    name="tracking_number"
+                    value="{{ tracking_number }}"
+                    required
+                    class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition"
+                    placeholder="Enter tracking number"
+                />
+                <p class="mt-1 text-sm text-gray-500">The tracking number you want to monitor</p>
+            </div>
+
+            {# Carrier Selection #}
+            <div class="mb-6">
+                <label for="carrier_code" class="block text-sm font-medium text-gray-700 mb-2">
+                    Carrier <span class="text-red-500">*</span>
+                </label>
+                <select
+                    id="carrier_code"
+                    name="carrier_code"
+                    required
+                    class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition"
+                >
+                    <option value="">Select a carrier...</option>
+                    <option value="ups">UPS</option>
+                    <option value="fedex">FedEx</option>
+                    <option value="usps">USPS</option>
+                    <option value="dhl">DHL</option>
+                    <option value="chinapost">China Post</option>
+                    <option value="sf-express">SF Express</option>
+                    <option value="yto">YTO Express</option>
+                    <option value="sto">STO Express</option>
+                    <option value="zto">ZTO Express</option>
+                    <option value="other">Other</option>
+                </select>
+                <p class="mt-1 text-sm text-gray-500">Select the shipping carrier for this tracking number</p>
+            </div>
+
+            {# Optional: Custom Carrier Name #}
+            <div class="mb-6" id="custom_carrier_section" style="display: none;">
+                <label for="carrier_name" class="block text-sm font-medium text-gray-700 mb-2">
+                    Custom Carrier Name
+                </label>
+                <input
+                    type="text"
+                    id="carrier_name"
+                    name="carrier_name"
+                    class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition"
+                    placeholder="Enter carrier name"
+                />
+                <p class="mt-1 text-sm text-gray-500">Enter the carrier name if not listed above</p>
+            </div>
+
+            {# Description (Optional) #}
+            <div class="mb-6">
+                <label for="description" class="block text-sm font-medium text-gray-700 mb-2">
+                    Description <span class="text-gray-400">(Optional)</span>
+                </label>
+                <textarea
+                    id="description"
+                    name="description"
+                    rows="3"
+                    class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition"
+                    placeholder="Add any notes or description for this shipment..."
+                ></textarea>
+                <p class="mt-1 text-sm text-gray-500">Optional notes to help you identify this shipment</p>
+            </div>
+
+            {# CSRF Token #}
+            <input type="hidden" name="_csrf_token" value="{{ csrf_token('tracking_create') }}" />
+
+            {# Submit Button #}
+            <div class="flex items-center justify-end gap-4">
+                <a
+                    href="{{ path('app_home') }}"
+                    class="px-6 py-3 border border-gray-300 text-gray-700 font-medium rounded-lg hover:bg-gray-50 transition duration-200"
+                >
+                    Cancel
+                </a>
+                <button
+                    type="submit"
+                    class="px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-lg transition duration-200 flex items-center gap-2"
+                >
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
+                    </svg>
+                    Create Tracking Order
+                </button>
+            </div>
+        </form>
+    </div>
+
+    {# How It Works Section #}
+    <div class="mt-6 bg-gray-50 rounded-lg p-6">
+        <h3 class="text-lg font-semibold text-gray-900 mb-4">How It Works</h3>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <div class="flex items-start">
+                <div class="flex-shrink-0 w-10 h-10 bg-blue-100 rounded-full flex items-center justify-center text-blue-600 font-bold">
+                    1
+                </div>
+                <div class="ml-4">
+                    <h4 class="font-medium text-gray-900 mb-1">Enter Details</h4>
+                    <p class="text-sm text-gray-600">Provide your tracking number and select the carrier</p>
+                </div>
+            </div>
+            <div class="flex items-start">
+                <div class="flex-shrink-0 w-10 h-10 bg-blue-100 rounded-full flex items-center justify-center text-blue-600 font-bold">
+                    2
+                </div>
+                <div class="ml-4">
+                    <h4 class="font-medium text-gray-900 mb-1">Automatic Tracking</h4>
+                    <p class="text-sm text-gray-600">We'll automatically track your shipment and update the status</p>
+                </div>
+            </div>
+            <div class="flex items-start">
+                <div class="flex-shrink-0 w-10 h-10 bg-blue-100 rounded-full flex items-center justify-center text-blue-600 font-bold">
+                    3
+                </div>
+                <div class="ml-4">
+                    <h4 class="font-medium text-gray-900 mb-1">Get Notified</h4>
+                    <p class="text-sm text-gray-600">Receive updates about your package's journey</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Show/hide custom carrier name field
+        document.getElementById('carrier_code').addEventListener('change', function() {
+            const customSection = document.getElementById('custom_carrier_section');
+            const carrierNameInput = document.getElementById('carrier_name');
+
+            if (this.value === 'other') {
+                customSection.style.display = 'block';
+                carrierNameInput.required = true;
+            } else {
+                customSection.style.display = 'none';
+                carrierNameInput.required = false;
+                carrierNameInput.value = '';
+            }
+        });
+    </script>
+{% endblock %}
