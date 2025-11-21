@@ -22,19 +22,19 @@ class TrackingOrderService
     {
         // 1. 校验参数
         if (empty($req->getUserId())) {
-            throw new \InvalidArgumentException('用户ID不能为空');
+            throw new \InvalidArgumentException('User ID cannot be empty');
         }
 
         if (empty($req->getTrackingNumber())) {
-            throw new \InvalidArgumentException('跟踪号码不能为空');
+            throw new \InvalidArgumentException('Tracking number cannot be empty');
         }
 
         if (empty($req->getCarrierCode())) {
-            throw new \InvalidArgumentException('承运商代码不能为空');
+            throw new \InvalidArgumentException('Carrier code cannot be empty');
         }
 
         if (empty($req->getCarrierName())) {
-            throw new \InvalidArgumentException('承运商名称不能为空');
+            throw new \InvalidArgumentException('Carrier name cannot be empty');
         }
 
         // 2. 存储客户的跟踪订单

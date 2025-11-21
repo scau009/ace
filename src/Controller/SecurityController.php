@@ -39,6 +39,11 @@ class SecurityController extends AbstractController
     #[Route('/', name: 'app_home')]
     public function home(): Response
     {
+        // Render different templates based on authentication status
+        if ($this->getUser()) {
+            return $this->render('security/dashboard.html.twig');
+        }
+
         return $this->render('security/home.html.twig');
     }
 }

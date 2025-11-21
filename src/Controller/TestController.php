@@ -24,10 +24,8 @@ final class TestController extends AbstractController
             'users' => $users,
         ]);
 
-//        DeferredLogger::flush();
-//        throw new AutoFlushException("Test exception");
         return $this->json([
-            'message' => 'Hello World!!!222',
+            'message' => 'Hello World!',
             'users' => $users,
         ]);
     }
