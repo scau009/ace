@@ -19,4 +19,6 @@ interface TrackingAgent
      * @return TrackingResult[]
      */
     public function batchGetTracking(array $trackingNos): array;
+
+    public function getAllCarriers(): array;
 }

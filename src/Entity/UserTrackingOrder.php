@@ -12,6 +12,8 @@ use Doctrine\ORM\Mapping\GeneratedValue;
 use Doctrine\ORM\Mapping\Id;
 use Doctrine\ORM\Mapping\Index;
 use Doctrine\ORM\Mapping\Table;
+use Symfony\Component\Serializer\Attribute\Context;
+use Symfony\Component\Serializer\Normalizer\DateTimeNormalizer;
 
 #[Entity(repositoryClass: UserTrackingOrderRepository::class)]
 #[Index(name: 'idx_user_tracking_orders_user_id',fields: ['user_id','status'])]
@@ -52,15 +54,18 @@ class UserTrackingOrder
     private int $status = 0;
 
     #[Column(type: 'datetime_immutable', nullable: false)]
+    #[Context([DateTimeNormalizer::FORMAT_KEY => 'Y-m-d\TH:i:s\Z'])]
     private \DateTimeImmutable $createdAt;
 
     #[Column(type: 'datetime_immutable', nullable: false)]
+    #[Context([DateTimeNormalizer::FORMAT_KEY => 'Y-m-d\TH:i:s\Z'])]
     private \DateTimeImmutable $updatedAt;
 
     /**
      * @var \DateTimeImmutable|null 最后一次跟踪时间
      */
     #[Column(type: 'datetime_immutable', nullable: true)]
+    #[Context([DateTimeNormalizer::FORMAT_KEY => 'Y-m-d\TH:i:s\Z'])]
     private ?\DateTimeImmutable $lastTrackedAt = null;
 
     public function isFinished(): bool

@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Entity\Common\User;
+use App\Repository\CarrierRepository;
 use App\Repository\UserTrackingOrderRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -15,6 +16,7 @@ class TrackingController extends AbstractController
 {
     public function __construct(
         private readonly UserTrackingOrderRepository $trackingOrderRepository,
+        private readonly CarrierRepository $carrierRepository,
     ) {
     }
 
@@ -101,8 +103,15 @@ class TrackingController extends AbstractController
             return $this->redirectToRoute('app_home');
         }
 
+        // Fetch active carriers from database
+        $carriers = $this->carrierRepository->findBy(
+            ['status' => 1],
+            ['carrierName' => 'ASC']
+        );
+
         return $this->render('tracking/create.html.twig', [
             'tracking_number' => $trackingNumber,
+            'carriers' => $carriers,
         ]);
     }
 }

@@ -91,7 +91,7 @@ class Agent implements TrackingAgent
 
     private function findCourier(string $carrierCode): ?Courier
     {
-        $courierList = $this->getAllCouriers();
+        $courierList = $this->getAllCarriers();
         foreach ($courierList as $courier) {
             if ($courier->getCourierCode() === $carrierCode) {
                 return $courier;
@@ -122,7 +122,7 @@ class Agent implements TrackingAgent
      * @return Courier[]
      * @throws InvalidArgumentException
      */
-    public function getAllCouriers(): array
+    public function getAllCarriers(): array
     {
         return $this->trackingMorePool->get('allCouriers', function (ItemInterface $item): array {
             try {
